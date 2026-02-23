@@ -1,5 +1,4 @@
-
-#include "Accel.cpp"
+#include "Accel.h"
 
 Accel* accel = nullptr;
 void setup() {
