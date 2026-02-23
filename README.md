@@ -27,8 +27,8 @@ Cette section du projet couvre exclusivement :
 3. Cloner le dépôt :
 
 ```bash
-git clone https://github.com/TeamSwince/TweeHunter-Controller
-cd manette-firmware
+git clone https://github.com/LES-SWINCEUX/TweeHunter-Controller
+cd TweeHunter-Controller
 ```
 
 4. Ouvrir le dossier dans VS Code
