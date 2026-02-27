@@ -3,5 +3,5 @@
 
 void initCommunication();
 void handleSerial();
-
+void envoyerJoystick(int x, int y);
 #endif
