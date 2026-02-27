@@ -78,7 +78,7 @@ int lecture = read_encoder();
 
 
 
-/* endoffile */
+ endoffile */
 
 /*Code pour menu lcd print 1 quand incrémente et -1 quand décrémente*/
 int mode = 0;
