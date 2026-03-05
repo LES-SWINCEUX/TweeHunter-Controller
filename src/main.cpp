@@ -66,7 +66,7 @@ void loop() {
     lastSend = currentTime;
 
     
-    js.lireValeur(A0, A7);
+    js.lireValeur(A0, A1);
 
     envoyerJoystick(js.getX(), js.getY());
   }

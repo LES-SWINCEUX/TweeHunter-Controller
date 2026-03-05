@@ -2,15 +2,17 @@
 #define JOYSTICK_H
 
 class joyStick {
-private:
-    int xVal;
-    int yVal;
+ private:
+  int xVal;
+  int yVal;
 
-public:
-    joyStick();                       
-    void lireValeur(int pinX, int pinY);
-    int getX();
-    int getY();
+ public:
+  joyStick();
+  void lireValeur(int pinX, int pinY);
+  int getX();
+  int getY();
+
+  // void afficherValeurTerminal() ;
 };
 
 #endif
