@@ -6,6 +6,7 @@ struct OutputAccel {
   int x;
   int y;
   int z;
+  bool isActive;
 };
 
 class Accel {
@@ -15,7 +16,11 @@ class Accel {
   int Zpin = A3;
 
  public:
-  Accel(int xPin, int yPin, int zPin) : Xpin(xPin), Ypin(yPin), Zpin(zPin) {}
+  Accel(int xPin, int yPin, int zPin) {
+    Xpin = xPin;
+    Ypin = yPin;
+    Zpin = zPin;
+  }
   OutputAccel readValues();
 };
 #endif

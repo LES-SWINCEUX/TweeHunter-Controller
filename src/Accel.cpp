@@ -4,6 +4,11 @@ OutputAccel Accel::readValues() {
   int valeurx = analogRead(Xpin);
   int valeury = analogRead(Ypin);
   int valeurz = analogRead(Zpin);
-
-  return {valeurx, valeury, valeurz};
+  float somme = valeurx + valeury + valeurz;
+  if (somme=1000){
+    return {valeurx, valeury, valeurz, true};
+}
+  else {
+    return {valeurx, valeury, valeurz, false};
+  }
 }
