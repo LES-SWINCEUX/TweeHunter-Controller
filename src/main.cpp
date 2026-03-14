@@ -24,6 +24,7 @@ Accel accel(A2, A3, A4);
 
 joyStick js;
 Boutons boutons(27, 28);
+bool comboLastState = false;
 
 // vARIABLE JEU
 int nbBalles = 0;
@@ -88,18 +89,25 @@ void loop() {
   // Gestion Bouton
   boutons.update();
 
-  // Gachette
-  if (boutons.gachettePressed()) {
-    envoyerBouton("gachette");
+  // état actuel de la combinaison
+  bool comboNow = boutons.gachetteState() && boutons.reloadState();
+
+  if (comboNow && !comboLastState) {
+    envoyerBouton("menu_pause");
   }
 
-  // Envoie demande recharge à PC
-  OutputAccel dataAccel = accel.readValues();
+  comboLastState = comboNow;
 
-  if (boutons.reloadPressed() && dataAccel.isActive) {
-    envoyerBouton("demande_recharge");
+  // si pas en combo, gérer boutons normaux
+  if (!comboNow) {
+    if (boutons.gachettePressed()) {
+      envoyerBouton("gachette");
+    }
+
+    else if (boutons.reloadPressed() && accel.readValues().isActive) {
+      envoyerBouton("demande_recharge");
+    }
   }
-
   // Joystick valeur en continu
   unsigned long currentTime = millis();
 
