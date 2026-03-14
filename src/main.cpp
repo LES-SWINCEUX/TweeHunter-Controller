@@ -24,8 +24,8 @@ const int pinReload2 = 27;
 const int pinGachette = 28;
 
 // Joystick
-const int pinJoyX = A0;
-const int pinJoyY = A1;
+const int pinJoyX = A1;
+const int pinJoyY = A0;
 const int pinJoySW = 33;
 
 // Accéléromètre analogique
@@ -38,7 +38,7 @@ const int pinEncA = 2;
 const int pinEncB = 3;
 
 // ---------- 7 segments ----------
-int segments[7] = {30, 31, 32, 33, 34, 35, 36};
+int segments[7] = {31, 30, 35, 34, 33, 32, 37};
 
 // ordre : a b c d e f g
 int chiffres[10][7] = {
@@ -203,13 +203,13 @@ void test7Segments() {
 
 
   afficherChiffre(30);
-  /*for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 10; i++) {
     afficherChiffre(i);
-    delay(1000);*/
-  delay(10000);
+    delay(1000);
 
   eteindre7Segments();
   Serial.println("Test 7 segments termine.");
+}
 }
 
 void testEncodeur() {
