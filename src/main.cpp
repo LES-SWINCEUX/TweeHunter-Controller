@@ -201,10 +201,12 @@ void test7Segments() {
   Serial.println("Test 7 segments...");
   Serial.println("Affichage de 0 a 9, 1 seconde par chiffre.");
 
-  for (int i = 0; i < 10; i++) {
+
+  afficherChiffre(30);
+  /*for (int i = 0; i < 10; i++) {
     afficherChiffre(i);
-    delay(1000);
-  }
+    delay(1000);*/
+  delay(10000);
 
   eteindre7Segments();
   Serial.println("Test 7 segments termine.");
