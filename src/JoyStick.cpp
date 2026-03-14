@@ -1,28 +1,20 @@
-#include <Arduino.h>
 #include "JoyStick.h"
 
+#include <Arduino.h>
 
 joyStick::joyStick() {
-    xVal = 0;
-    yVal = 0;
+  xVal = 0;
+  yVal = 0;
 }
-
 
 void joyStick::lireValeur(int pinX, int pinY) {
-    xVal = analogRead(pinX);
-    yVal = analogRead(pinY);
+  xVal = analogRead(pinX);
+  yVal = analogRead(pinY);
 }
 
+int joyStick::getX() { return xVal; }
 
-int joyStick::getX() {
-    return xVal;
-}
-
-
-int joyStick::getY() {
-    return yVal;
-}
-
+int joyStick::getY() { return yVal; }
 
 /*void joyStick::afficherValeurTerminal(){
     Serial.print("axe X = ");
