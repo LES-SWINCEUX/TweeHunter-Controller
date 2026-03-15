@@ -19,8 +19,8 @@
 #include <Arduino.h>
 
 // internal variable
-int rotaryPinA = 18;  // this is your interrupt pin
-int rotaryPinB = 19;  // this can be any digital input
+int rotaryPinA = 2;   // this is your interrupt pin
+int rotaryPinB = 3;   // this can be any digital input
 int rotaryValue = 0;  // the actual count
 
 // *********************************************************************
@@ -56,7 +56,21 @@ int setup_encoder(int intPinA, int PinB) {
 // read_encoder()
 // return the content of rotaryValue
 // *********************************************************************
-int read_encoder() { return rotaryValue; }
+int read_encoder() {
+  static int lastValue = 0;
+  int currentValue;
+
+  noInterrupts();
+  currentValue = rotaryValue;
+  interrupts();
+
+  int delta = currentValue - lastValue;
+  lastValue = currentValue;
+
+  if (delta > 0) return 1;   // sens horaire
+  if (delta < 0) return -1;  // sens antihoraire
+  return 0;                  // pas de mouvement
+}
 
 // *********************************************************************
 // write_encoder()

@@ -25,20 +25,22 @@ bool Boutons::gachettePressed() {
   bool event = false;
 
   if (_lastGachetteState == HIGH && _gachetteState == LOW) {
-    event = true;
+    if (millis() - _lastGachetteTime > _debounceDelay) {
+      event = true;
+      _lastGachetteTime = millis();
+    }
   }
 
   _lastGachetteState = _gachetteState;
   return event;
 }
 
-bool Boutons::reloadPressed() {
-  bool event = false;
-
-  if (_lastReloadState == HIGH && _reloadState == LOW) {
-    event = true;
-  }
+bool Boutons::reloadPressed() { bool event = false; if (_lastReloadState == HIGH && _reloadState == LOW) { event = true; }
 
   _lastReloadState = _reloadState;
   return event;
 }
+
+bool Boutons::gachetteState() { return _gachetteState == LOW; }
+
+bool Boutons::reloadState() { return _reloadState == LOW; }

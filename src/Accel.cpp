@@ -13,7 +13,7 @@ OutputAccel Accel::readValues() {
 
   float somme = valeurx + valeury + valeurz;
 
-  if (somme >= 1000.0) {
+  if (somme >= 1150.0) {
     return {valeurx, valeury, valeurz, true};
   } else {
     return {valeurx, valeury, valeurz, false};
