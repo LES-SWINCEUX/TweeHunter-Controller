@@ -66,12 +66,65 @@ void envoyerJoystick(int x, int y) {
   Serial.println();
 }
 
-void envoyerBouton(const char* nomBouton) {
+void envoyerBouton(const bool gachette, const bool reload, const bool accel,
+                   int encodeur) {
   StaticJsonDocument<100> doc;
 
   doc["type"] = "event";
-  doc["btn"] = nomBouton;
+  if (gachette) {
+    doc["btn"] = 1;
+
+  } else {
+    doc["btn"] = 0;
+  }
+
+  if (reload) {
+    doc["btn1"] = 1;
+
+  } else {
+    doc["btn1"] = 0;
+  }
+
+  if (accel) {
+    doc["btn2"] = 1;
+
+  } else {
+    doc["btn2"] = 0;
+  }
+
+  doc["encodeur"] = encodeur;
+  // doc["btn"] = nomBouton;
 
   serializeJson(doc, Serial);
   Serial.println();
 }
+// void envoyerBouton1(const bool nomBouton) {
+//   StaticJsonDocument<100> doc;
+
+//   doc["type"] = "event1";
+//   if (nomBouton) {
+//     doc["btn1"] = 1;
+
+//   } else {
+//     doc["btn1"] = 0;
+//   }
+//   // doc["btn"] = nomBouton;
+
+//   serializeJson(doc, Serial);
+//   Serial.println();
+// }
+// void envoyerBouton2(const bool nomBouton) {
+//   StaticJsonDocument<100> doc;
+
+//   doc["type"] = "event2";
+//   if (nomBouton) {
+//     doc["btn2"] = 1;
+
+//   } else {
+//     doc["btn2"] = 0;
+//   }
+//   // doc["btn"] = nomBouton;
+
+//   serializeJson(doc, Serial);
+//   Serial.println();
+// }

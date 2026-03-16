@@ -22,23 +22,29 @@ void Boutons::update() {
 }
 
 bool Boutons::gachettePressed() {
-  bool event = false;
+  // bool event = false;
 
-  if (_lastGachetteState == HIGH && _gachetteState == LOW) {
-    if (millis() - _lastGachetteTime > _debounceDelay) {
-      event = true;
-      _lastGachetteTime = millis();
-    }
-  }
+  // if (_lastGachetteState == HIGH && _gachetteState == LOW) {
+  //   if (millis() - _lastGachetteTime > _debounceDelay) {
+  //     event = true;
+  //     _lastGachetteTime = millis();
+  //   }
+  // }
 
-  _lastGachetteState = _gachetteState;
-  return event;
+  // _lastGachetteState = _gachetteState;
+  // return event;
+  Serial.println(_gachetteState);
+  return !_gachetteState;
 }
 
-bool Boutons::reloadPressed() { bool event = false; if (_lastReloadState == HIGH && _reloadState == LOW) { event = true; }
+bool Boutons::reloadPressed() {
+  // bool event = false;
+  // if (_lastReloadState == HIGH && _reloadState == LOW) {
+  //   event = true;
+  // }
 
-  _lastReloadState = _reloadState;
-  return event;
+  // _lastReloadState = _reloadState;
+  return !_reloadState;
 }
 
 bool Boutons::gachetteState() { return _gachetteState == LOW; }

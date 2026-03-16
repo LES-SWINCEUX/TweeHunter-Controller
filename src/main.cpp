@@ -71,7 +71,6 @@ void setup() {
 }
 
 void loop() {
-
   // Com PC
   handleSerial();
 
@@ -81,12 +80,10 @@ void loop() {
 
   // LCD MENU (rafraîchit seulement si menu change)
   if (menuActif != lastMenu) {
-
     lcd.clear();
     lcd.setCursor(0, 0);
 
     switch (menuActif) {
-
       case MENU_BALLES:
         lcd.print("Balles: ");
         lcd.print(nbBalles);
@@ -110,39 +107,46 @@ void loop() {
   boutons.update();
 
   // état actuel de la combinaison
-  bool comboNow = boutons.gachetteState() && boutons.reloadState();
 
-  if (comboNow && !comboLastState) {
+  // bool comboNow = boutons.gachetteState() && boutons.reloadState();
 
-    envoyerBouton("menu_pause");
-    Serial.println("MENU PAUSE");
-  }
+  // if (comboNow && !comboLastState) {
+  //   envoyerBouton("menu_pause");
+  //   Serial.println("MENU PAUSE");
+  // }
 
-  comboLastState = comboNow;
+  // Pin 22 pour
+  // comboLastState = comboNow;
 
   // si pas en combo, gérer boutons normaux
-  if (!comboNow) {
+  // if (!comboNow) {
+  // if (boutons.gachettePressed()) { code pas bon
+  //   envoyerBouton(true);
+  //   Serial.println("Gachette appuyée");
 
-    if (boutons.gachettePressed()) {
+  //   digitalWrite(pinDELRouge, HIGH);
+  //   ledRougeTimer = millis();
+  //   ledRougeActive = true;
+  // }
 
-      envoyerBouton("gachette");
-      Serial.println("Gachette appuyée");
-
-      digitalWrite(pinDELRouge, HIGH);
-      ledRougeTimer = millis();
-      ledRougeActive = true;
-    }
-
-    else if (boutons.reloadPressed() && accel.readValues().isActive) {
-
-      // envoyerBouton("demande_recharge");
-      Serial.println("Recharge réussi");
-    }
+  //   envoyerBouton(true);
+  //   Serial.println("Recharge réussi");
+  // }
+  if (boutons.gachettePressed()) {
+    digitalWrite(pinDELRouge, HIGH);
+    ledRougeTimer = millis();
+    ledRougeActive = true;
   }
+  int lecture = read_encoder();
+
+  envoyerBouton(boutons.gachettePressed(), boutons.reloadPressed(),
+                accel.readValues().isActive, lecture);
+  // envoyerBouton1(boutons.reloadPressed());
+  // envoyerBouton2(accel.readValues().isActive);
+  // }
 
   // extinction automatique LED tir
   if (ledRougeActive && millis() - ledRougeTimer > ledDuration) {
-
     digitalWrite(pinDELRouge, LOW);
     ledRougeActive = false;
   }
@@ -151,31 +155,26 @@ void loop() {
   unsigned long currentTime = millis();
 
   if (currentTime - lastSend >= interval) {
-
     lastSend = currentTime;
 
     js.lireValeur(A1, A0);
-    // envoyerJoystick(js.getX(), js.getY());
+    envoyerJoystick(js.getX(), js.getY());
   }
 
   // Encodeur pour menu
-  int lecture = read_encoder();
+  // int lecture = read_encoder();
 
   if (lecture == 1) {
-
     menuActif++;
 
-    if (menuActif > 2)
-      menuActif = 0;
+    if (menuActif > 2) menuActif = 0;
   }
 
   if (lecture == -1) {
-
     menuActif--;
 
-    if (menuActif < 0)
-      menuActif = 2;
+    if (menuActif < 0) menuActif = 2;
   }
 
- // Serial.println(menuActif);
+  // Serial.println(menuActif);
 }
