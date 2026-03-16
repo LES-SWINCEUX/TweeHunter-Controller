@@ -28,7 +28,7 @@ Boutons boutons(28, 27);
 bool comboLastState = false;
 
 // VARIABLES JEU
-int nbBalles = 3;
+int nbBalles = 9;
 int score = 0;
 int equipement = 1;
 
@@ -73,7 +73,7 @@ void setup() {
 void loop() {
   // Com PC
   handleSerial();
-
+  nbBalles = getNb_balles();
   // MAJ 7 segments
   affichage.setNbBalles(nbBalles);
   affichage.update();

@@ -4,7 +4,6 @@
 #include <ArduinoJson.h>
 
 // Variables définies dans main.cpp
-extern int nbBalles;
 extern int score;
 extern int equipement;
 
