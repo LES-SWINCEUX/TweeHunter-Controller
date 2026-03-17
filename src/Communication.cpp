@@ -10,6 +10,8 @@ extern int equipement;
 void traiterMessage(String message);
 void envoyerStatus();
 
+int nbBalle;
+
 String inputBuffer = "";
 
 void initCommunication() { Serial.begin(115200); }
@@ -36,7 +38,7 @@ void traiterMessage(String message) {
   if (!type) return;
 
   if (strcmp(type, "config") == 0) {
-    if (doc["nb_balles"].is<int>()) nbBalles = doc["nb_balles"];
+    if (doc["nb_balles"].is<int>()) nbBalle = doc["nb_balles"];
 
     if (doc["score"].is<int>()) score = doc["score"];
 
@@ -44,11 +46,13 @@ void traiterMessage(String message) {
   }
 }
 
+int getNb_balles() { return nbBalle; }
+
 void envoyerStatus() {
   StaticJsonDocument<100> doc;
 
   doc["type"] = "status";
-  doc["nb_balles"] = nbBalles;
+  doc["nb_balles"] = nbBalle;
 
   serializeJson(doc, Serial);
   Serial.println();

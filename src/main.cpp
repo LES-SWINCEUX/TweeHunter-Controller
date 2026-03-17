@@ -28,7 +28,7 @@ Boutons boutons(28, 27);
 bool comboLastState = false;
 
 // VARIABLES JEU
-int nbBalles = 9;
+int nbBalles = 0;
 int score = 0;
 int equipement = 1;
 

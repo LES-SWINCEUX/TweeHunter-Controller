@@ -1,8 +1,6 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
-int nbBalles;
-
 void initCommunication();
 void handleSerial();
 
@@ -15,6 +13,6 @@ void envoyerBouton(const bool gachette, const bool reload, const bool accel,
 
 void envoyerStatus();
 
-int getNb_balles() { return nbBalles; }
+int getNb_balles();
 
 #endif
