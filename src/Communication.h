@@ -13,4 +13,6 @@ void envoyerBouton(const bool gachette, const bool reload, const bool accel,
 
 void envoyerStatus();
 
+int getNb_balles();
+
 #endif
