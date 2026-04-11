@@ -6,6 +6,7 @@
 #include "BoutonsManette.h"
 #include "Communication.h"
 #include "JoyStick.h"
+#include "Muon.h"
 #include "incremental.h"
 
 // LCD
@@ -27,8 +28,13 @@ joyStick js;
 Boutons boutons(28, 27);
 bool comboLastState = false;
 
+// Moeteur
+int Start_Moteur = 0;
+unsigned long tempsMoteur = 0;
+bool moteurActif = false;
+
 // VARIABLES JEU
-int nbBalles = 3;
+int nbBalles = 0;
 int score = 0;
 int equipement = 1;
 
@@ -47,6 +53,11 @@ unsigned long ledRougeTimer = 0;
 bool ledRougeActive = false;
 const int ledDuration = 100;  // ms
 
+// Ajout pour fix l'affichage lcd
+int lastScore = -1;
+int lastBalles = -1;
+int lastEquipement = -1;
+
 void setup() {
   Serial.begin(115200);
 
@@ -63,6 +74,7 @@ void setup() {
 
   pinMode(pinDELRouge, OUTPUT);
   pinMode(pinDELVert, OUTPUT);
+  pinMode(22, OUTPUT);  // Pin moteur
 
   boutons.begin();
   initCommunication();
@@ -71,32 +83,28 @@ void setup() {
 }
 
 void loop() {
-
   // Com PC
   handleSerial();
-
+  nbBalles = getNb_balles();
   // MAJ 7 segments
   affichage.setNbBalles(nbBalles);
   affichage.update();
 
   // LCD MENU (rafraîchit seulement si menu change)
-  if (menuActif != lastMenu) {
-
+  if (menuActif != lastMenu || score != lastScore || nbBalles != lastBalles ||
+      equipement != lastEquipement) {
     lcd.clear();
     lcd.setCursor(0, 0);
 
     switch (menuActif) {
-
       case MENU_BALLES:
         lcd.print("Balles: ");
         lcd.print(nbBalles);
         break;
-
       case MENU_SCORE:
         lcd.print("Score: ");
         lcd.print(score);
         break;
-
       case MENU_EQUIPEMENT:
         lcd.print("Equip: ");
         lcd.print(equipement);
@@ -104,45 +112,26 @@ void loop() {
     }
 
     lastMenu = menuActif;
+    lastScore = score;
+    lastBalles = nbBalles;
+    lastEquipement = equipement;
   }
 
   // Gestion Bouton
   boutons.update();
 
-  // état actuel de la combinaison
-  bool comboNow = boutons.gachetteState() && boutons.reloadState();
-
-  if (comboNow && !comboLastState) {
-
-    envoyerBouton("menu_pause");
-    Serial.println("MENU PAUSE");
+  if (boutons.gachettePressed()) {
+    digitalWrite(pinDELRouge, HIGH);
+    ledRougeTimer = millis();
+    ledRougeActive = true;
   }
+  int lecture = read_encoder();
 
-  comboLastState = comboNow;
-
-  // si pas en combo, gérer boutons normaux
-  if (!comboNow) {
-
-    if (boutons.gachettePressed()) {
-
-      envoyerBouton("gachette");
-      Serial.println("Gachette appuyée");
-
-      digitalWrite(pinDELRouge, HIGH);
-      ledRougeTimer = millis();
-      ledRougeActive = true;
-    }
-
-    else if (boutons.reloadPressed() && accel.readValues().isActive) {
-
-      // envoyerBouton("demande_recharge");
-      Serial.println("Recharge réussi");
-    }
-  }
+  envoyerBouton(boutons.gachettePressed(), boutons.reloadPressed(),
+                accel.readValues().isActive, lecture);
 
   // extinction automatique LED tir
   if (ledRougeActive && millis() - ledRougeTimer > ledDuration) {
-
     digitalWrite(pinDELRouge, LOW);
     ledRougeActive = false;
   }
@@ -151,31 +140,45 @@ void loop() {
   unsigned long currentTime = millis();
 
   if (currentTime - lastSend >= interval) {
-
     lastSend = currentTime;
 
     js.lireValeur(A1, A0);
-    // envoyerJoystick(js.getX(), js.getY());
+    envoyerJoystick(js.getX(), js.getY());
   }
 
   // Encodeur pour menu
-  int lecture = read_encoder();
+  // int lecture = read_encoder();
 
   if (lecture == 1) {
-
     menuActif++;
 
-    if (menuActif > 2)
-      menuActif = 0;
+    if (menuActif > 2) menuActif = 0;
   }
 
   if (lecture == -1) {
-
     menuActif--;
 
-    if (menuActif < 0)
-      menuActif = 2;
+    if (menuActif < 0) menuActif = 2;
   }
 
- // Serial.println(menuActif);
+  // Serial.println(menuActif);
+
+  // Moteur vibranb
+
+  if (Start_Moteur == 1 && !moteurActif) {
+    moteurActif = true;
+    tempsMoteur = millis();
+    digitalWrite(22, HIGH);
+    Start_Moteur = 0;
+  }
+
+  if (moteurActif && millis() - tempsMoteur >= 2000) {
+    digitalWrite(22, LOW);
+    moteurActif = false;
+  }
+
+  if (muonSeuilAtteint) {
+    envoyerMuon();
+    muonSeuilAtteint = false;
+  }
 }

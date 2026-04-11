@@ -4,12 +4,14 @@
 #include <ArduinoJson.h>
 
 // Variables définies dans main.cpp
-extern int nbBalles;
 extern int score;
 extern int equipement;
+extern int Start_Moteur;
 
 void traiterMessage(String message);
 void envoyerStatus();
+
+int nbBalle;
 
 String inputBuffer = "";
 
@@ -37,19 +39,25 @@ void traiterMessage(String message) {
   if (!type) return;
 
   if (strcmp(type, "config") == 0) {
-    if (doc["nb_balles"].is<int>()) nbBalles = doc["nb_balles"];
+    if (doc["nb_balles"].is<int>()) nbBalle = doc["nb_balles"];
 
     if (doc["score"].is<int>()) score = doc["score"];
 
     if (doc["equipement"].is<int>()) equipement = doc["equipement"];
   }
+
+  if (strcmp(type, "commande") == 0) {
+    if (doc["Start_Moteur"].is<int>()) Start_Moteur = doc["Start_Moteur"];
+  }
 }
+
+int getNb_balles() { return nbBalle; }
 
 void envoyerStatus() {
   StaticJsonDocument<100> doc;
 
   doc["type"] = "status";
-  doc["nb_balles"] = nbBalles;
+  doc["nb_balles"] = nbBalle;
 
   serializeJson(doc, Serial);
   Serial.println();
@@ -66,12 +74,73 @@ void envoyerJoystick(int x, int y) {
   Serial.println();
 }
 
-void envoyerBouton(const char* nomBouton) {
+void envoyerMuon() {
+  StaticJsonDocument<100> doc;
+  doc["type"] = "muon";
+  doc["Buff_Muons"] = 1;
+  serializeJson(doc, Serial);
+  Serial.println();
+}
+
+void envoyerBouton(const bool gachette, const bool reload, const bool accel,
+                   int encodeur) {
   StaticJsonDocument<100> doc;
 
   doc["type"] = "event";
-  doc["btn"] = nomBouton;
+  if (gachette) {
+    doc["btn"] = 1;
+
+  } else {
+    doc["btn"] = 0;
+  }
+
+  if (reload) {
+    doc["btn1"] = 1;
+
+  } else {
+    doc["btn1"] = 0;
+  }
+
+  if (accel) {
+    doc["btn2"] = 1;
+
+  } else {
+    doc["btn2"] = 0;
+  }
+
+  doc["encodeur"] = encodeur;
+  // doc["btn"] = nomBouton;
 
   serializeJson(doc, Serial);
   Serial.println();
 }
+// void envoyerBouton1(const bool nomBouton) {
+//   StaticJsonDocument<100> doc;
+
+//   doc["type"] = "event1";
+//   if (nomBouton) {
+//     doc["btn1"] = 1;
+
+//   } else {
+//     doc["btn1"] = 0;
+//   }
+//   // doc["btn"] = nomBouton;
+
+//   serializeJson(doc, Serial);
+//   Serial.println();
+// }
+// void envoyerBouton2(const bool nomBouton) {
+//   StaticJsonDocument<100> doc;
+
+//   doc["type"] = "event2";
+//   if (nomBouton) {
+//     doc["btn2"] = 1;
+
+//   } else {
+//     doc["btn2"] = 0;
+//   }
+//   // doc["btn"] = nomBouton;
+
+//   serializeJson(doc, Serial);
+//   Serial.println();
+// }

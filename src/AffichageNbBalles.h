@@ -4,19 +4,19 @@
 #include <Arduino.h>
 
 class AffichageNbBalles {
-  private:
-    int segments[7];
-    int nb_balles;
+ private:
+  int segments[7];
+  int nb_balles;
 
-    static const int chiffres[10][7];
+  static const int chiffres[10][7];
 
-  public:
-    AffichageNbBalles(int segPins[7], int valeurInitiale = 0);
+ public:
+  AffichageNbBalles(int segPins[7], int valeurInitiale = 0);
 
-    void begin();
-    void setNbBalles(int valeur);
-    int getNbBalles();
-    void update();
+  void begin();
+  void setNbBalles(int valeur);
+  int getNbBalles();
+  void update();
 };
 
 #endif
