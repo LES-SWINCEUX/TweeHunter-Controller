@@ -33,7 +33,7 @@ bool Boutons::gachettePressed() {
 
   // _lastGachetteState = _gachetteState;
   // return event;
-  Serial.println(_gachetteState);
+  // Serial.println(_gachetteState);
   return !_gachetteState;
 }
 

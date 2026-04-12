@@ -6,11 +6,9 @@ volatile uint32_t muonCount = 0;
 volatile bool aboveThreshold = false;
 volatile uint32_t lastDetection = 0;
 volatile bool muonSeuilAtteint = false;
+volatile bool mustRead = false;
 
 void initMuon() {
-  // ADC
-  ADCSRA = (ADCSRA & 0b11111000) | 0b010;
-
   // Timer1 à 10 kHz
   noInterrupts();
   TCCR1A = 0;
@@ -27,9 +25,19 @@ void initMuon() {
 }
 
 ISR(TIMER1_COMPA_vect) {
-  int raw = analogRead(A7);
+  mustRead = true;
 
-  int centered = raw - 512;
+  // Buffer (on met 512 par défaut si pas encore lu)
+  buffer[indexBuf] = 512;
+  indexBuf++;
+  if (indexBuf >= N) indexBuf = 0;
+}
+
+void updateMuon(int rawValue) {
+  if (!mustRead) return;
+  mustRead = false;
+
+  int centered = rawValue - 512;
   int scaled = centered * SCALE_FACTOR;
 
   uint32_t now = micros();
@@ -42,7 +50,7 @@ ISR(TIMER1_COMPA_vect) {
 
     if (muonCount >= SEUIL_MUONS) {
       muonSeuilAtteint = true;
-      muonCount = 0;  // reset
+      muonCount = 0;
     }
   }
 
@@ -50,6 +58,7 @@ ISR(TIMER1_COMPA_vect) {
     aboveThreshold = false;
   }
 
+  // Buffer avec la vraie valeur
   int sample = scaled + 512;
   if (sample < 0) sample = 0;
   if (sample > 1023) sample = 1023;

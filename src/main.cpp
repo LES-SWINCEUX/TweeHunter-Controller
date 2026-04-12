@@ -58,6 +58,9 @@ int lastScore = -1;
 int lastBalles = -1;
 int lastEquipement = -1;
 
+unsigned long ledVertTimer = 0;
+bool ledVertActive = false;
+
 void setup() {
   Serial.begin(115200);
 
@@ -78,14 +81,19 @@ void setup() {
 
   boutons.begin();
   initCommunication();
+  initMuon();
 
-  digitalWrite(pinDELVert, HIGH);
+  // digitalWrite(pinDELVert, HIGH);
 }
 
 void loop() {
   // Com PC
   handleSerial();
   nbBalles = getNb_balles();
+
+    js.lireValeur(A1, A0);
+  updateMuon(analogRead(A7));  // A7 en dernier
+
   // MAJ 7 segments
   affichage.setNbBalles(nbBalles);
   affichage.update();
@@ -142,7 +150,7 @@ void loop() {
   if (currentTime - lastSend >= interval) {
     lastSend = currentTime;
 
-    js.lireValeur(A1, A0);
+    // js.lireValeur(A1, A0);
     envoyerJoystick(js.getX(), js.getY());
   }
 
@@ -179,6 +187,14 @@ void loop() {
 
   if (muonSeuilAtteint) {
     envoyerMuon();
+    digitalWrite(pinDELVert, HIGH);
+    ledVertTimer = millis();
+    ledVertActive = true;
     muonSeuilAtteint = false;
+  }
+
+  if (ledVertActive && millis() - ledVertTimer > 200) {
+    digitalWrite(pinDELVert, LOW);
+    ledVertActive = false;
   }
 }
