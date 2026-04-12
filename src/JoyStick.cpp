@@ -1,13 +1,22 @@
-#include <Arduino.h>
-#include <LiquidCrystal.h>
 #include "JoyStick.h"
 
-void joyStick::lireValeur(int pinX, int pinY){
-    xVal = analogRead(pinX);
-    yVal = analogRead(pinY);
+#include <Arduino.h>
+
+joyStick::joyStick() {
+  xVal = 0;
+  yVal = 0;
 }
 
-void joyStick::afficherValeurTerminal(){
+void joyStick::lireValeur(int pinX, int pinY) {
+  xVal = analogRead(pinX);
+  yVal = analogRead(pinY);
+}
+
+int joyStick::getX() { return xVal; }
+
+int joyStick::getY() { return yVal; }
+
+/*void joyStick::afficherValeurTerminal(){
     Serial.print("axe X = ");
     Serial.print(xVal);
     Serial.print(", axe Y = ");
@@ -26,4 +35,4 @@ void joyStick::afficherValeurLCD(LiquidCrystal& lcd){
     lcd.setCursor(0, 1);
     lcd.print("Y= ");
     lcd.print(yVal);
-}
+}*/
