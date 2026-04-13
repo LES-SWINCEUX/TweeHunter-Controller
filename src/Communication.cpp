@@ -12,6 +12,8 @@ void envoyerStatus();
 
 int nbBalle;
 
+int swinceVal;
+
 String inputBuffer = "";
 
 void initCommunication() { Serial.begin(115200); }
@@ -43,10 +45,14 @@ void traiterMessage(String message) {
     if (doc["score"].is<int>()) score = doc["score"];
 
     if (doc["equipement"].is<int>()) equipement = doc["equipement"];
+
+    if (doc["swince"].is<int>()) swinceVal = doc["swince"];
   }
 }
 
 int getNb_balles() { return nbBalle; }
+
+int getSwinceVal() { return swinceVal; }
 
 void envoyerStatus() {
   StaticJsonDocument<100> doc;

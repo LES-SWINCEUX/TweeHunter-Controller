@@ -15,4 +15,5 @@ void envoyerStatus();
 
 int getNb_balles();
 
+int getSwinceVal();
 #endif

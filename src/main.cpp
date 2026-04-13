@@ -6,6 +6,7 @@
 #include "BoutonsManette.h"
 #include "Communication.h"
 #include "JoyStick.h"
+#include "Millis_Timer.h"
 #include "incremental.h"
 
 // LCD
@@ -47,8 +48,15 @@ unsigned long ledRougeTimer = 0;
 bool ledRougeActive = false;
 const int ledDuration = 100;  // ms
 
+// swinceur
+int swince = 0;
+bool swinceActive = false;
+const int pinSwince = 40;
+
 void setup() {
   Serial.begin(115200);
+
+  Serial3.begin(9600);  // pour swinceur
 
   // encodeur
   setup_encoder(2, 3);
@@ -64,16 +72,28 @@ void setup() {
   pinMode(pinDELRouge, OUTPUT);
   pinMode(pinDELVert, OUTPUT);
 
+  pinMode(pinSwince, OUTPUT);
+
   boutons.begin();
   initCommunication();
 
   digitalWrite(pinDELVert, HIGH);
+  digitalWrite(pinSwince, LOW);
 }
 
 void loop() {
   // Com PC
   handleSerial();
   nbBalles = getNb_balles();
+
+  //  mets une pin a high pour envoyer la commande de swincer
+  if (getSwinceVal() == 1 && swinceActive == false) {
+    swinceActive = true;
+    Serial3.println("SWINCE_FULL");
+    MillisTimer(10000);  // delay pour effectuer la swince
+    swinceActive = false;
+  }
+
   // MAJ 7 segments
   affichage.setNbBalles(nbBalles);
   affichage.update();
