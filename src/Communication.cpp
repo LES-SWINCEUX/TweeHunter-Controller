@@ -7,6 +7,7 @@
 extern int score;
 extern int equipement;
 extern int Start_Moteur;
+int swinceVal;
 
 void traiterMessage(String message);
 void envoyerStatus();
@@ -44,6 +45,8 @@ void traiterMessage(String message) {
     if (doc["score"].is<int>()) score = doc["score"];
 
     if (doc["equipement"].is<int>()) equipement = doc["equipement"];
+
+    if (doc["swince"].is<int>()) swinceVal = doc["swince"];
   }
 
   if (strcmp(type, "commande") == 0) {
@@ -52,6 +55,8 @@ void traiterMessage(String message) {
 }
 
 int getNb_balles() { return nbBalle; }
+int getSwinceVal() { return swinceVal; }
+void resetSwinceVal() { swinceVal = 0; }
 
 void envoyerStatus() {
   StaticJsonDocument<100> doc;

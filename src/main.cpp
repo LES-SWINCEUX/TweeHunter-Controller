@@ -6,6 +6,7 @@
 #include "BoutonsManette.h"
 #include "Communication.h"
 #include "JoyStick.h"
+#include "Millis_Timer.h"
 #include "Muon.h"
 #include "incremental.h"
 
@@ -61,8 +62,14 @@ int lastEquipement = -1;
 unsigned long ledVertTimer = 0;
 bool ledVertActive = false;
 
+// swinceur
+int swince = 0;
+bool swinceActive = false;
+const int pinSwince = 40;
+
 void setup() {
   Serial.begin(115200);
+  Serial3.begin(9600);
 
   // encodeur
   setup_encoder(2, 3);
@@ -77,11 +84,13 @@ void setup() {
 
   pinMode(pinDELRouge, OUTPUT);
   pinMode(pinDELVert, OUTPUT);
-  pinMode(22, OUTPUT);  // Pin moteur
-
+  pinMode(23, OUTPUT);  // Pin moteur
+  pinMode(pinSwince, OUTPUT);
   boutons.begin();
   initCommunication();
   initMuon();
+
+  digitalWrite(pinSwince, LOW);
 
   // digitalWrite(pinDELVert, HIGH);
 }
@@ -91,7 +100,7 @@ void loop() {
   handleSerial();
   nbBalles = getNb_balles();
 
-    js.lireValeur(A1, A0);
+  js.lireValeur(A1, A0);
   updateMuon(analogRead(A7));  // A7 en dernier
 
   // MAJ 7 segments
@@ -176,12 +185,12 @@ void loop() {
   if (Start_Moteur == 1 && !moteurActif) {
     moteurActif = true;
     tempsMoteur = millis();
-    digitalWrite(22, HIGH);
+    digitalWrite(23, HIGH);
     Start_Moteur = 0;
   }
 
   if (moteurActif && millis() - tempsMoteur >= 2000) {
-    digitalWrite(22, LOW);
+    digitalWrite(23, LOW);
     moteurActif = false;
   }
 
@@ -196,5 +205,14 @@ void loop() {
   if (ledVertActive && millis() - ledVertTimer > 200) {
     digitalWrite(pinDELVert, LOW);
     ledVertActive = false;
+  }
+
+  //  mets une pin a high pour envoyer la commande de swincer
+  if (getSwinceVal() == 1 && swinceActive == false) {
+    swinceActive = true;
+    Serial3.println("SWINCE_FULL");
+    MillisTimer(10000);  // delay pour effectuer la swince
+    swinceActive = false;
+    resetSwinceVal();
   }
 }

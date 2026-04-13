@@ -14,5 +14,6 @@ void envoyerMuon();
 void envoyerStatus();
 
 int getNb_balles();
-
+int getSwinceVal();
+void resetSwinceVal();
 #endif
